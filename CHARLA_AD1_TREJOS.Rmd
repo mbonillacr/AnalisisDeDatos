@@ -1,0 +1,664 @@
+---
+title: "ANALISIS DE DATOS I"
+author: "Minor Bonilla Gómez"
+date: "minor.bonilla@grupopromerica.com"
+output:
+  rmdformats::material:
+    highlight: kate
+    self_contained: true
+    code_folding: show
+    thumbnails: true
+    gallery: true
+    fig_width: 4
+    fig_height: 4
+    df_print: kable
+---
+
+```{r echo_f, include=FALSE, message=FALSE, warning=FALSE}
+
+  knitr::opts_chunk$set(echo = FALSE)
+  CLASE00="F:/LEAD/2020/ESS/002 IMAGENES/CL00/"  
+  CLASE01="F:/LEAD/2020/ESS/002 IMAGENES/CL01/"
+  PONENCIA="F:/BKLLB/PONENCIAS/ACADEMICAS/UCR/2020/JUN/CHARLA DATA SCIENCE BS/IMAGENES/"
+  RUTAACTUAL="F:/LEAD/2020/ESP/CLASES/0002/"
+  
+```
+
+```{r, echo=FALSE, out.width = "400px",fig.align="left", message=FALSE, warning=FALSE}
+    IMG=paste0(PONENCIA,"CIPAD-Logo.png")
+    knitr::include_graphics(IMG)
+```
+
+<!------------FORMATO--------------->
+
+
+<style>
+      .page {
+            transform: translateY(1080px);
+            transition: transform 0 linear;
+            visibility: hidden;
+            opacity: 0;
+            font-size: 20px;
+            margin-left: 1em;
+            }
+      .pages h1 {
+                color: #076126;
+                font-style: bold;
+                margin-top: 5px;
+                }
+    .header-panel {
+                  background-color: #111111;
+                  }
+    .panel {
+            background-color: rgba(255,255,255,0);
+            border: 2px solid transparent;
+            border-radius: 0px;
+            -webkit-box-shadow: 4px rgba(255,255,255,10);
+            box-shadow: 0 1px 1px rgba(255,255,255,10);
+          } 
+      .header-panel h1.title{
+                            font-size: 40px;
+                            color: #999999;
+                            padding-left: 30px;
+                            margin: 5px 0px;
+                            font-style: bold;
+                            }
+      .header-panel h4.author {
+                            font-size: 25px;
+                            color: #999999;
+                            padding-left: 35px;
+                            margin: 5px 0px;
+                            }
+      .header-panel h4.date {
+                            font-size: 15px;
+                            color: #999999;
+                            padding-left: 35px;
+                            margin: 5px 0px;
+                            }
+      body {
+            text-align: justify
+            font-family: "Helvetica Neue";
+            font-size: 40px;
+            line-height: 2;
+            color: #222222;
+            background-color: #666666;
+           }
+    body .container .jumbotron, 
+    body .container .jumbotron-default, 
+    body .container .well, 
+    body .container .well-default, 
+    body .container-fluid .jumbotron, 
+    body .container-fluid .jumbotron-default, 
+    body .container-fluid .well, 
+    body .container-fluid .well-default {
+                                        background-color: #e6e2e2;
+                                        }        
+    .nav-pills>li.active>a,
+    .nav-pills>li.active>a:focus, 
+    .nav-pills>li.active>a:hover {
+                                  color: #fff;
+                                  background-color: #076126;
+                                  }
+    .nav-pills>li>a {
+                     border-radius: 4px;
+                    }
+    .nav>li>a {
+              position: relative;
+              display: block;
+              padding: 10px 15px;
+              }
+    a, 
+    a:focus, 
+    a:hover {
+              color: #076126;
+            }
+    .menu ul li a {
+                  color: #222222;
+                  text-decoration: none;
+                  }        
+</style>
+
+<!------------CONTENIDO--------------->
+
+# {.tabset .tabset-fade .tabset-pills}
+
+```{r, out.width = "800px",fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(PONENCIA,"Fractal Loop 2.gif")
+    knitr::include_graphics(IMG)
+```
+
+# LIBRERIAS
+
+```{r librerias, include=TRUE, message=TRUE, warning=FALSE, echo=TRUE}
+
+# Dado que algunas de estas librerias podrían no estar instaladas en nuestra máquina, resulta de suma 
+# importancia instalarlas antes -de ser necesario-; para ello usaremos el comando *install.packages* que 
+# en nuestro caso particular: install.packages("NOMBRE_LIBRERIA")
+
+  
+ suppressPackageStartupMessages( library('mvtnorm'))
+ suppressPackageStartupMessages( library('ggplot2'))
+
+ suppressPackageStartupMessages( library('magrittr'))
+ suppressPackageStartupMessages( library('kableExtra'))
+
+ suppressPackageStartupMessages( library('readxl'))
+ suppressPackageStartupMessages( library('MASS'))
+ suppressPackageStartupMessages( library('knitr'))
+ suppressPackageStartupMessages( library('FactoMineR'))
+ suppressPackageStartupMessages( library('factoextra'))
+ suppressPackageStartupMessages( library("corrplot"))
+
+ suppressPackageStartupMessages( library('plotly'))
+ suppressPackageStartupMessages( library('xfun'))
+
+```
+
+# INTRODUCCIÓN
+>"...Good teachers teach things, 
+>
+great teachers teach how to learn   
+>
+and how to think..."  
+> 
+-Kevin Zeng Hu-
+
+# EL SECRETO
+
+* Problema
+
+  * Planteo
+  
+  * Operación
+  
+  * Respuesta
+
+
+# ESPACIOS {.tabset .tabset-fade .tabset-pills}
+
+## Individuos
+
+```{r, out.width = "800px", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Diapositiva1.png")
+    knitr::include_graphics(IMG)
+```
+
+## Variables
+
+```{r, out.width = "800px", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Diapositiva2.png")
+    knitr::include_graphics(IMG)
+```
+
+Vale la pena hacerse entonces preguntas sobre los nuevos actores; son esas variables relevantes? Cuales? En qué direccion?
+
+**PARSIMONIA** 
+
+> En igualdad de condiciones, la explicación más sencilla suele ser la más probable. 
+  Esto implica que, cuando dos teorías en igualdad de condiciones tienen las mismas 
+  consecuencias, la teoría más simple tiene más probabilidades de ser correcta que la compleja
+
+<p align="center">
+<iframe 
+  width='900px' 
+  height='850px' 
+  src='https://es.wikipedia.org/wiki/Navaja_de_Ockham'>
+</iframe>
+
+# ANÁLISIS DE COMPONENTES PRINCIPALES (ACP)  {.tabset .tabset-pills .tabset-fade}
+
+Partiendo del principio de la parsimonia, queremos reducir la dimensionalidad. 
+
+Para ello requerimos un proceso que permita objetivamente llevar a cabo esta tarea. 
+
+## VISUAL  {.tabset .tabset-pills .tabset-fade}
+
+### 0
+
+Requerimos adelgazar X a través de alguna combinación lineal 
+
+```{r, out.width = "800px", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Diapositiva3.png")
+    knitr::include_graphics(IMG)
+```
+
+### 1
+
+Requerimos adelgazar X a travé de alguna combinación lineal 
+
+```{r, out.width = "800px", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Diapositiva4.png")
+    knitr::include_graphics(IMG)
+```
+
+### 2
+
+Requerimos adelgazar X a travé de alguna combinación lineal 
+
+```{r, out.width = "800px", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Diapositiva5.png")
+    knitr::include_graphics(IMG)
+```
+
+
+### 3
+
+Requerimos adelgazar X a travé de alguna combinación lineal 
+
+```{r, out.width = "800px", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Diapositiva2.png")
+    knitr::include_graphics(IMG)
+```
+
+### 4
+
+```{r, out.width = "900px",fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE00,"PCA.gif")
+    knitr::include_graphics(IMG)
+```
+
+### 5
+
+Nuestro problema consiste en proyectar la nube de puntos sobre un plano
+
+
+```{r, out.width = "900px",fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"Proyeccion00.jpeg")
+    knitr::include_graphics(IMG)
+```
+
+Un libro que bien vale la pena estudiar
+
+```{r, out.width = "450px",fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+    IMG=paste0(CLASE01,"AnalisisMultivariado.jpg")
+    knitr::include_graphics(IMG)
+```
+
+
+### 6
+
+<p align="center">
+<iframe 
+  width='900px' 
+  height='850px' 
+  src='https://setosa.io/ev/principal-component-analysis/'>
+</iframe>
+
+## INTUICION {.tabset .tabset-fade .tabset-pills}
+
+Cada vector propio no es más que un conjunto de ponderadores de nuestras variables (de ahí que las *P* variables son ponderadas y sumadas para obtener una nueva variable que le llamamos Componente Principal)
+
+Esta es una guía para el usuario que pretende hacer uso del **Análisis de Componentes Principales**. Como guía, no pretende ser un análisis exhaustivo en la teoría que subyace detrás del instrumento. 
+
+Objetivos 
+
+>1. Identificar la interacción de las variables en la dinámica del sistema
+>
+>2. Reducir la dimensionalidad de los datos
+>
+>3. Reducir la redundancia en los datos
+>
+>4. Filtrar parte del ruído presente en los datos
+>
+>5. Comprimir los datos
+
+### Ventajas
+
+1. Preserva la estructura global de las observaciones
+
+2. Altamente eficiente para conjuntos de datos grandes
+
+3. Puede evidenciar la importancia de algunas variables en el conjunto entero
+
+### Desventajas
+
+1. Puede sufrir con problemas de escala
+
+2. Sensible a datos extremos
+
+3. Puede no ser inmediatamente intuititivo
+
+### Proceso 
+
+No obstante -y a riesgo de perder absoluta formalidad- podríamos sobre simplificar el proceso describiéndolo en unos pocos pasos
+
+* 1 - Centrar los datos con respecto a su promedio  
+* 2 - Computar la Matriz de Varianzas y Covarianzas [*MVC*]  
+* 3 - Obtener los Valores $\lambda=[\lambda_{1},\lambda_{2}, ..., \lambda_{p}]$ y Vectores Propios    $V=[v_{1}, v_{2}, ..., v_{p}]$ de *MCV*  
+* 4 - Seleccionar los *K* Valores Propios que más aportan a explicar la varianza tal que $\text {APORTE a la VARIANZA}= \frac{v_{1} + v_{2} + ... + v_{k}}{\sum_{i=1}^{p} v_{i}}$
+* 5 - Proyectar la matriz de datos X en el subespacio de las variables, para los k-componentes seleccionados $X_{Transformado = V_{K}^t X}$ (Como nota, basta con premultiplicar a los datos transformados por $V_{K}$ para recuperar los valores originales de X $V_{K}X_{Transformado} = V_{K}V_{K}^t X=X$ ... Eso es sexi!)
+
+
+# PROBLEMA DE NEGOCIO {.tabset .tabset-pills .tabset-fade}
+
+## VIDA REAL  {.tabset .tabset-pills .tabset-fade}
+
+<p align="center">
+<iframe 
+  width='900px' 
+  height='850px' 
+  src='F:/BKLLB/PONENCIAS/ACADEMICAS/UCR/2020/OCT/TreeMap-MD-EJEMPLO-AV.html'>
+</iframe>
+
+## PRODUCTOS
+
+```{r, echo=TRUE, warning=FALSE, include=FALSE ,out.width = "1200px"}
+suppressPackageStartupMessages( library("corrplot"))
+pPathDATOS ='F:/BKLLB/PONENCIAS/ACADEMICAS/UCR/2020/OCT/'
+ACP_Firma = read.csv(paste0(pPathDATOS,"acp2.csv"))
+ACP_Firma_01 = ACP_Firma[,2:18]
+ACP_Firma_02 = ACP_Firma[,c(2:5,20:41)]
+
+acp.df.FM_01=FactoMineR::PCA(ACP_Firma_01)
+acp.df.FM_02=FactoMineR::PCA(ACP_Firma_02)
+
+```
+```{r, echo=TRUE, warning=FALSE, out.width = "1200px"}
+
+corrplot(acp.df.FM_02$var$contrib, is.corr=FALSE)
+
+factoextra::fviz_eig(acp.df.FM_02, addlabels = TRUE, ylim = c(0, 80))
+print(acp.df.FM_02$eig)
+factoextra::fviz_pca_var(
+  acp.df.FM_02, col.var="contrib",
+  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+  repel = TRUE # Avoid text overlapping
+)
+
+```
+
+
+## MORA
+
+```{r, echo=TRUE, warning=FALSE, out.width = "1200px"}
+
+corrplot(acp.df.FM_01$var$contrib, is.corr=FALSE)
+
+factoextra::fviz_eig(acp.df.FM_01, addlabels = TRUE, ylim = c(0, 80))
+print(acp.df.FM_01$eig)
+factoextra::fviz_pca_var(
+  acp.df.FM_01, col.var="contrib",
+  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+  repel = TRUE # Avoid text overlapping
+)+
+  theme(text = element_text(size = 7.5),
+        axis.title = element_text(size = 7.5),
+        axis.text = element_text(size = 7.5))
+
+factoextra::fviz_pca_biplot(acp.df.FM_01, repel = TRUE)
+```
+
+
+## CREDIT SCORING {.tabset .tabset-fade .tabset-pills}
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE, autodep = TRUE, fig.align = "center")
+```
+
+### OLS a LOGIT
+
+Ahora nuestro fenómeno de estudio se ha sido reducido a dos valores $0$ y $1$.
+
+
+$$
+Y = 
+\begin{cases} 
+      1: & \text{si} \\
+      \\
+      0: & \text{no} 
+\end{cases}
+$$
+Estamos interesados en clasificar a cada observación, en cada en uno de los dos grupos correspondientes. 
+
+Podemos entonces enfocarnos en definir una métrica que nos permita diferenciar a uno de otro estado. 
+
+$$
+\log\left(\frac{p_{i}(x)}{1-p_{i}(x)}\right) = \beta_0 + \beta_1 x_{(1,i)} + \ldots  + \beta_{p} x_{(p,i)}
+$$
+
+Empleando el estimador de *Maxima Verosimilitud*. 
+
+Nos interesa conocer la probabilidad asociada a la realizacion conjunta del set de datos (para todos y no para cada observación). 
+
+Pensemos que nuestra colección de datos fue generado por un mismo proceso de manera independiente, haciendo que la probabilidad conjunta de dicha realización sea la probabilidad de haber ocurrido el evento 1, el evento 2, ..., el evento n-ésimo de manera simultánea. Sabemos que si los eventos son independientes, su probabilidad conjunta vendrá dada por la multiplicatoria de todos los eventos, de manera simultánea.
+
+$$
+L(\boldsymbol{{\beta}}) = \prod_{i = 1}^{n} P[Y_i = y_i | X_i = x_i]
+$$
+
+$$
+L(\boldsymbol{{\beta}}) = \prod_{i : y_i = 1}^{} \frac{e^{\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}}}{1 + e^{\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}}} \prod_{j : y_j = 0}^{} \frac{1}{1 + e^{\beta_0 + \beta_1 x_{j1} + \cdots + \beta_p x_{jp}}}
+$$
+
+
+
+### OBTENCION de COEFICIENTES
+
+A diferencia de Mínimos Cuadrados Ordinarios, la obtención del vector $\beta$  no es directa $\hat \beta = {(X'X)}^{-1} X'Y$
+
+Será necesario un método numérico para obtener el vector de coeficientes (*habitualmente el de Newton-Raphson*). 
+
+Obviando el paso anterior... Excel?  `R`?
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+xfun::embed_file('titanic LGT.xlsm')
+```
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+library(dplyr)
+library(rsample)
+library(fastDummies)
+library(MASS)
+library(stargazer)
+library(xlsx)
+
+# PARAMETROS ----
+semilla=123456789
+pTipoProducto=0.6
+pDentro=0.80
+pPathDATOS ='F:/BKLLB/PONENCIAS/ACADEMICAS/UCR/2020/OCT/'
+ds_Firma = readRDS(paste0(pPathDATOS,"input.rds"))
+
+colnames(ds_Firma)=
+c("X01","X02","X03","X04","X05","X06","X07","X08","X09",
+  "X10","X11","X12","X13","X14","X15","X16","X17","X18","X19",
+  "X20","X21","X22","X23","X24","X25","X26","X27","X28","X29",
+  "X30","X31","X32","X33","X34","X35","X36","X37","X38","X39",
+  "X40","X41","X42","X43","X44","X45","X46","X47","X48")
+
+set.seed(semilla)
+
+colnames(ds_Firma)
+
+# CARGA Y MANIPULACION DATOS ORIGINALES ----
+
+ds_Firma$X10.SE <- gsub(" ", "_", ds_Firma$X10)
+ds_Firma$Y = ifelse(ds_Firma$X29>=3,1,0)
+ds_Firma$X15.dm = ifelse(ds_Firma$X15>=pTipoProducto,1,0)
+
+ds_Firma=dplyr::mutate(ds_Firma, 
+                       X07.cls = dplyr::case_when(
+                         X07 <= 12 ~ "00_12",
+                         X07 > 12 & X07 <= 24 ~ "12_24",  
+                         X07 > 24 & X07 <= 36 ~ "24_36", 
+                         X07 > 36 & X07 <= 48 ~ "36_48", 
+                         X07 > 48  ~ "48_00", 
+                       ))
+
+# DATOS: TRANSFORMACIONES ----
+ds_Firma.dummy=fastDummies::dummy_cols(ds_Firma, 
+                                       select_columns = c("X04",
+                                                          "X07.cls",
+                                                          "X10.SE",
+                                                          "X26",
+                                                          "X38"))
+
+ds_Firma.dummy$X26_3mas=ds_Firma.dummy$X26_3+ds_Firma.dummy$X26_4+ds_Firma.dummy$X26_5
+
+ds_Firma.dummy$prima_saldo=ds_Firma.dummy$X06/ds_Firma.dummy$X09
+ds_Firma.dummy$prop_1_100=ifelse(ds_Firma.dummy$X15==1,1,0)
+
+ds_Firma.1718=ds_Firma.dummy[ds_Firma.dummy$X03>201700 & ds_Firma.dummy$X03<201806,]
+
+ds_Firma.1718.split <- initial_split(ds_Firma.1718, prop = pDentro)
+ds_Firma.1718.train <- training(ds_Firma.1718.split)
+ds_Firma.1718.test  <- testing (ds_Firma.1718.split)
+
+# PARAMETROS ----
+Especificacion= "
+                Y~
+                X04_53+
+                X04_60+
+                X04_39+
+                X04_33+
+                X04_7+
+                X04_38+
+                X04_49+
+                X04_3+
+                X07.cls_00_12+
+                X07.cls_12_24+
+                prop_1_100+
+                X08+
+                prima_saldo+
+                X26_1+
+                X26_2+
+                X26_3mas+
+                X10.SE_AUDIO_Y_VIDEO+
+                X10.SE_AUTOMOTRIZ+
+                X10.SE_BICICLIETAS_Y_JUGUETES+
+                X10.SE_TECNOLOGIA+
+                X10.SE_TELEFONOS+
+                X10.SE_LAVADORAS+
+                X20+
+                log(1+X21)+
+                log(1+X32)+
+                log(1+X33)+
+                log(1+X34)+
+                X36+
+                X40+
+                X38_F+
+                log(1+X44)
+                "
+ds_Firma.1718.split <- initial_split(ds_Firma.1718, prop = pDentro)
+ds_Firma.1718.trn <- training(ds_Firma.1718.split)
+ds_Firma.1718.tst <- testing (ds_Firma.1718.split)
+
+# ECUACION ----
+
+Ecuacion=glm(
+  Especificacion,
+  family=binomial(),
+  data = ds_Firma.1718.train
+)
+
+# Ecuacion.step = Ecuacion %>% stepAIC(trace = FALSE)
+# stargazer(Ecuacion.step,type = "text")
+
+stargazer(Ecuacion,type = "text")
+
+ds_Firma.1718.tst$pr.fcst <- Ecuacion %>% predict(ds_Firma.1718.tst, type = "response")
+ds_Firma.1718.trn$pr.fcst <- Ecuacion %>% predict(ds_Firma.1718.trn, type = "response")
+
+write.csv(ds_Firma.1718.tst, paste0(pPathDATOS,"Firma_TRN.csv"))
+write.csv(ds_Firma.1718.trn, paste0(pPathDATOS,"Firma_TST.csv"))
+
+
+# ITERACIONES ----
+# Proceso iterativo para el análisis de COEFICIENTES
+
+b=Sys.time()
+AIC = list()
+CFC = list()
+NN=5
+pb = txtProgressBar(min = 0, max = length(NN), initial = 0) 
+
+for (i in 1:NN){
+  set.seed(semilla) 
+  
+  ds_Firma.1718.split <- initial_split(ds_Firma.1718, prop = pDentro)
+  ds_Firma.1718.trn <- training(ds_Firma.1718.split)
+  ds_Firma.1718.tst <- testing (ds_Firma.1718.split)
+  
+  # ESTIMACION ----
+  
+  Ecuacion=glm(Especificacion, 
+               family=binomial(),
+               data = ds_Firma.1718.train)
+  
+  a=summary(Ecuacion)
+  
+  AIC[[i]]=a$aic 
+  CFC[[i]]=a$coefficients
+  
+  semilla=12345+i*10
+  setTxtProgressBar(pb,i)
+  print(i)
+}
+
+# OUTPUT ITERACIONES
+#write.csv(CFC, paste0(pPathDATOS,"Firma_CFC.csv"))
+#write.csv(AIC, paste0(pPathDATOS,"Firma_AIC.csv"))
+
+write.csv(CFC, "Firma_CFC.csv")
+write.csv(AIC, "Firma_AIC.csv")
+
+c=Sys.time()
+pTiempoModelo=c-b
+print(pTiempoModelo)
+
+```
+
+### OUTPUTS
+
+OUTPUT1
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+
+library(excelR)
+
+A=data.frame(CFC)
+excelTable(head(A)) 
+
+xfun::embed_file("Firma_CFC.csv")
+
+```
+
+OUPUT2
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+library(excelR)
+B=data.frame(AIC)
+excelTable(head(B)) 
+
+xfun::embed_file("Firma_AIC.csv")
+
+```
+
+# REFLEXIONES FINALES
+
+* Ciencia de Datos (?)
+* Herramientas
+* Conocimiento
+* Comprensión
+* Puentes
+
+# ANEXOS
+
+## ANEXO 01
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+xfun::embed_file('ACP modificado.xlsm')
+```
+
+## ANEXO 02
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+xfun::embed_file('matrix.zip')
+```
+
+## ANEXO 03
+
+```{r, include=TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+xfun::embed_file('titanic LGT.xlsm')
+```
